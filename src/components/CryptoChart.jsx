@@ -3,22 +3,35 @@ import * as Plot from "@observablehq/plot";
 import { Box } from "@mui/material";
 
 const CryptoChart = ({ data }) => {
+  // Create a reference to hold the plot DOM element
   const plotRef = useRef(null);
 
+  // useEffect is used to create and clean up the chart when data changes
   useEffect(() => {
-    const transformedData = data.map((d) => ({
-      date: new Date(d.Date),
-      Bitcoin: d.Bitcoin,
-      Ethereum: d.Ethereum,
-      Solana: d.Solana,
-      USDC: d.USDC,
-    }));
+    // Convert the data from wide format to long format
+    const transformedData = data.flatMap((d) =>
+      Object.keys(d)
+        .filter((key) => key !== "Date")
+        .map((crypto) => ({
+          Date: new Date(d.Date),
+          Price: d[crypto],
+          Cryptocurrency: crypto,
+        }))
+    );
+
+    // Sort transformedData to control the drawing order by cryptocurrency color
+    const colorOrder = ["Ethereum", "Solana", "USDC", "Bitcoin"];
+    transformedData.sort(
+      (a, b) =>
+        colorOrder.indexOf(a.Cryptocurrency) -
+        colorOrder.indexOf(b.Cryptocurrency)
+    );
 
     const plot = Plot.plot({
       style: {
         fontSize: 16,
-        backgroundColor: "#1b1f2a", // Dark background for the chart
-        color: "#fff", // General text color
+        backgroundColor: "#1b1f2a",
+        color: "#fff",
         fontWeight: "bold",
       },
       width: 1000,
@@ -27,125 +40,44 @@ const CryptoChart = ({ data }) => {
       marginLeft: 90,
       marginRight: 20,
       marks: [
-        // Ethereum area and line chart with separate tip
         Plot.areaY(transformedData, {
-          x: "date",
-          y: "Ethereum",
-          fill: "rgba(15, 200, 246, 0.6)", // Semi-transparent green
-          curve: "linear",
+          x: "Date",
+          y2: 0, // Start areas from y = 0 (baseline)
+          y: "Price", // Height of areas corresponds to Price
+          fill: "Cryptocurrency",
+          fillOpacity: 0.6,
+          z: "Cryptocurrency", // Group areas by Cryptocurrency
         }),
         Plot.lineY(transformedData, {
-          x: "date",
-          y: "Ethereum",
-          stroke: "rgba(15, 200, 246, 1)",
+          x: "Date",
+          y: "Price",
+          stroke: "Cryptocurrency",
           curve: "linear",
+          z: "Cryptocurrency", // Group by Cryptocurrency
         }),
         Plot.tip(
           transformedData,
           Plot.pointer({
-            x: "date",
-            y: "Ethereum",
+            x: "Date",
+            y: "Price",
             title: (d) =>
-              `Date: ${d.date.toLocaleDateString()}\nEthereum: $${d.Ethereum.toFixed(
-                2
-              )}`,
-            fill: "#000", // Tooltip background color (black)
+              `Date: ${d.Date.toLocaleDateString()}\n${
+                d.Cryptocurrency
+              }: $${d.Price.toFixed(2)}`,
+            fill: "#000",
             textPadding: 8,
             fontSize: 14,
-            stroke: "#fff", // Text color for the tooltip
-          })
-        ),
-
-        // Solana area and line chart with separate tip
-        Plot.areaY(transformedData, {
-          x: "date",
-          y: "Solana",
-          fill: "rgba(135, 25, 235, 0.6)",
-          curve: "linear",
-        }),
-        Plot.lineY(transformedData, {
-          x: "date",
-          y: "Solana",
-          stroke: "rgba(135, 25, 235, 1)",
-          curve: "linear",
-        }),
-        Plot.tip(
-          transformedData,
-          Plot.pointer({
-            x: "date",
-            y: "Solana",
-            title: (d) =>
-              `Date: ${d.date.toLocaleDateString()}\nSolana: $${d.Solana.toFixed(
-                2
-              )}`,
-            fill: "#000", // Tooltip background color (black)
-            textPadding: 8,
-            fontSize: 14,
-            stroke: "#fff", // Text color for the tooltip
-          })
-        ),
-
-        // USDC area and line chart with separate tip
-        Plot.areaY(transformedData, {
-          x: "date",
-          y: "USDC",
-          fill: "rgba(200, 90, 245, 0.6)",
-          curve: "linear",
-        }),
-        Plot.lineY(transformedData, {
-          x: "date",
-          y: "USDC",
-          stroke: "rgba(200, 90, 245, 1)",
-          curve: "linear",
-        }),
-        Plot.tip(
-          transformedData,
-          Plot.pointer({
-            x: "date",
-            y: "USDC",
-            title: (d) =>
-              `Date: ${d.date.toLocaleDateString()}\nUSDC: $${d.USDC.toFixed(
-                2
-              )}`,
-            fill: "#000", // Tooltip background color (black)
-            textPadding: 8,
-            fontSize: 14,
-            stroke: "#fff", // Text color for the tooltip
-          })
-        ),
-
-        // Bitcoin area and line chart with separate tip
-        Plot.areaY(transformedData, {
-          x: "date",
-          y: "Bitcoin",
-          fill: "rgba(25, 195, 105, 0.6)",
-          curve: "linear",
-        }),
-        Plot.lineY(transformedData, {
-          x: "date",
-          y: "Bitcoin",
-          stroke: "rgba(25, 195, 105, 1)",
-          curve: "linear",
-        }),
-        Plot.tip(
-          transformedData,
-          Plot.pointer({
-            x: "date",
-            y: "Bitcoin",
-            title: (d) =>
-              `Date: ${d.date.toLocaleDateString()}\nBitcoin: $${d.Bitcoin.toFixed(
-                2
-              )}`,
-            fill: "#000", // Tooltip background color (black)
-            textPadding: 8,
-            fontSize: 14,
-            stroke: "#fff", // Text color for the tooltip
+            stroke: "#fff",
           })
         ),
 
         // Add a baseline (y=0) for visual reference
         Plot.ruleY([0]),
       ],
+      color: {
+        domain: ["Bitcoin", "Ethereum", "Solana", "USDC"], // Control the order of the colors
+        range: ["#FF9900", "#3C3CFF", "#00FFA2", "#FF00FF"], // Assign specific colors to each cryptocurrency
+      },
       x: {
         type: "time", // Ensure that the x-axis is treated as a time scale
         ticks: 6,
@@ -159,7 +91,7 @@ const CryptoChart = ({ data }) => {
         labelOffset: 70,
         grid: true,
         ticks: 5,
-        tickFormat: (d) => `$${(d / 1_000_000).toFixed(0)}M`, // Format numbers in millions with "$M"
+        tickFormat: (d) => `$${(d / 1_000_000).toFixed(0)}M`, // Format y-axis tick marks in millions with a dollar sign
       },
     });
 
