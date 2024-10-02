@@ -103,7 +103,7 @@ const CryptoChart = ({ data }) => {
     return () => {
       plot.remove(); // This prevents memory leaks and ensures that old plots are removed
     };
-  }, [data]);
+  }, [transformedData]);
 
   return (
     <Box sx={{ marginTop: 3 }}>
