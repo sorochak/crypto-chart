@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import * as Plot from "@observablehq/plot";
 import { Box } from "@mui/material";
 
@@ -6,10 +6,10 @@ const CryptoChart = ({ data }) => {
   // Create a reference to hold the plot DOM element
   const plotRef = useRef(null);
 
-  // useEffect is used to create and clean up the chart when data changes
-  useEffect(() => {
-    // Convert the data from wide format to long format
-    const transformedData = data.flatMap((d) =>
+  // Convert the data from wide format to long format
+  // Memoize the transformed data to prevent unnecessary recalculations on every render
+  const transformedData = useMemo(() => {
+    return data.flatMap((d) =>
       Object.keys(d)
         .filter((key) => key !== "Date")
         .map((crypto) => ({
@@ -18,15 +18,18 @@ const CryptoChart = ({ data }) => {
           Cryptocurrency: crypto,
         }))
     );
+  }, [data]);
 
-    // Sort transformedData to control the drawing order by cryptocurrency color
-    const colorOrder = ["Ethereum", "Solana", "USDC", "Bitcoin"];
-    transformedData.sort(
-      (a, b) =>
-        colorOrder.indexOf(a.Cryptocurrency) -
-        colorOrder.indexOf(b.Cryptocurrency)
-    );
+  // Sort transformedData to control the drawing order by cryptocurrency color
+  const colorOrder = ["Ethereum", "Solana", "USDC", "Bitcoin"];
+  transformedData.sort(
+    (a, b) =>
+      colorOrder.indexOf(a.Cryptocurrency) -
+      colorOrder.indexOf(b.Cryptocurrency)
+  );
 
+  // useEffect is used to create and clean up the chart when data changes
+  useEffect(() => {
     const plot = Plot.plot({
       style: {
         fontSize: 16,
