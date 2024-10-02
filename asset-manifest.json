@@ -1,15 +1,21 @@
 {
   "files": {
     "main.css": "/crypto-chart/static/css/main.f855e6bc.css",
-    "main.js": "/crypto-chart/static/js/main.1b016038.js",
+    "main.js": "/crypto-chart/static/js/main.c5a50a6d.js",
+    "static/js/474.0c82672a.chunk.js": "/crypto-chart/static/js/474.0c82672a.chunk.js",
+    "static/js/240.545fd11c.chunk.js": "/crypto-chart/static/js/240.545fd11c.chunk.js",
     "static/js/453.d8caa7b7.chunk.js": "/crypto-chart/static/js/453.d8caa7b7.chunk.js",
+    "static/js/691.5c11946b.chunk.js": "/crypto-chart/static/js/691.5c11946b.chunk.js",
     "index.html": "/crypto-chart/index.html",
     "main.f855e6bc.css.map": "/crypto-chart/static/css/main.f855e6bc.css.map",
-    "main.1b016038.js.map": "/crypto-chart/static/js/main.1b016038.js.map",
-    "453.d8caa7b7.chunk.js.map": "/crypto-chart/static/js/453.d8caa7b7.chunk.js.map"
+    "main.c5a50a6d.js.map": "/crypto-chart/static/js/main.c5a50a6d.js.map",
+    "474.0c82672a.chunk.js.map": "/crypto-chart/static/js/474.0c82672a.chunk.js.map",
+    "240.545fd11c.chunk.js.map": "/crypto-chart/static/js/240.545fd11c.chunk.js.map",
+    "453.d8caa7b7.chunk.js.map": "/crypto-chart/static/js/453.d8caa7b7.chunk.js.map",
+    "691.5c11946b.chunk.js.map": "/crypto-chart/static/js/691.5c11946b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.1b016038.js"
+    "static/js/main.c5a50a6d.js"
   ]
 }
