@@ -112,4 +112,5 @@ const CryptoChart = ({ data }) => {
   );
 };
 
-export default CryptoChart;
+// Wrap the component with React.memo to prevent unnecessary re-renders
+export default React.memo(CryptoChart);

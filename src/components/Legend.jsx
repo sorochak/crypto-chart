@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Typography, Divider } from "@mui/material";
 
 const Legend = ({ avgVolumes }) => {
@@ -134,4 +135,5 @@ const Legend = ({ avgVolumes }) => {
   );
 };
 
-export default Legend;
+// Wrap the component with React.memo to prevent unnecessary re-renders
+export default React.memo(Legend);
