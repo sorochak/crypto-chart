@@ -84,7 +84,7 @@ const CryptoDashboard = () => {
           {/* Suspense ensures that the components are displayed only once they are loaded */}
           <Suspense fallback={<div>Loading chart...</div>}>
             {/* Area Chart */}
-            <CryptoChart data={data} />
+            <CryptoChart data={data} avgVolumes={avgQ2Data} />
 
             {/* Legend */}
             <Legend avgVolumes={avgQ2Data} />
